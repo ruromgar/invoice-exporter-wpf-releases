@@ -23,3 +23,6 @@ Bug fixing: the program doesn't allow having duplicate CIFs anymore.
 
 ## v1.8
 Bug fixing: 'Create new company' feature was duplicating the generic DB schema instead of the chosen one.
+
+## v1.9
+New requirement: adding support for invoices just for supplies, with no import at all, according to Spanish legislation.
