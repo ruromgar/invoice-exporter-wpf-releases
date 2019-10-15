@@ -1,10 +1,29 @@
 # Exportador de facturas - Manual de usuario
 
-## ¿Para qué sirve este programa?
+## Índice
+- [Introducción](#intro)
+- [Carga de datos desde Excel](#1)
+  - [Solución de problemas](#1.1)
+- [Revisión y generación del archivo de datos](#2)
+  - [Configuración](#2.1)
+  - [Cuentas](#2.2)
+    - [Clientes y proveedores](#2.2.1)
+    - [Validaciones automáticas para clientes y proveedores](#2.2.2)
+    - [Contrapartidas](#2.2.3)
+    - [Validaciones automáticas para contrapartidas](#2.2.4)
+  - [Facturas](#2.3)
+    - [Facturas emitidas y recibidas](#2.3.1)
+    - [Validaciones automáticas para facturas](#2.3.2)
+    - [Validaciones no automáticas para facturas](#2.3.3)
+    - [Caso especial: intracomunitarias e inversión del sujeto pasivo](#2.3.4)
+    - [Cobros y pagos](#2.3.5)
+- [Carga del archivo en NCS](#3)
+
+## ¿Para qué sirve este programa? <a name="intro"></a>
 
 El Exportador convierte datos de Excel a NCS Contabilidad, antiguamente conocido como DirectorNET. ¿Qué datos? Cuentas de clientes y proveedores, contrapartidas, todo tipo de facturación y cobros y pagos. El proceso consta de tres partes: carga de datos desde Excel, revisión y generación del archivo de datos desde la interfaz gráfica del programa y por último importación en NCS.
 
-## 1. Carga de datos desde Excel
+## 1. Carga de datos desde Excel <a name="1"></a>
 
 El proceso se inicia con una hoja de Excel donde se encuentran los datos a exportar. Desde el botón **Datos** del menú superior se accede a la funcionalidad de MySQLForExcel.
 
@@ -44,19 +63,19 @@ Al hacer click en **Append** es posible que aparezca un aviso si no todas las co
 
 ![](images/mysqlforexcel_process3.gif)
 
-## 1.1 Solución de problemas
+## 1.1 Solución de problemas <a name="1.1"></a>
 
 - No se puede encontrar la columna X: A veces, tras un cambio en la BBDD, MySQLForExcel no permite añadir datos a la tabla, con el (poco descriptivo) mensaje de _No se puede encontrar la columna X_. En ese caso, la solución pasa por seleccionar cualquier otra tabla, hacer click en **Append Excel data to table** para abrir la ventana de mapeo y luego ir a **Advanced options**. Allí, en la parte inferior, están los mapeos guardados; tras borrarlos todos, el problema desaparecerá.
 
 ![](images/mysqlforexcel_problem1.gif)
 
-## 2. Revisión y generación del archivo de datos
+## 2. Revisión y generación del archivo de datos <a name="2"></a>
 
 En este momento los datos ya se encuentran en la BBDD de la empresa elegida (en este tutorial, _gcmain\_bk_). El siguiente paso es revisar que todo está correcto y generar el archivo de datos para importar. Para ello, lo primero es iniciar sesión en el Exportador. Tras hacer doble click en el icono del programa, se abrirá la ventana de login. El programa busca automáticamente actualizaciones, y se reinicia si encuentra alguna; si no, aparecerá un mensaje diciendo _El programa está actualizado_. Click en **Ok**, click en el desplegable para seleccionar la empresa y finalmente introducción de usuario y contraseña.
 
 ![](images/invoiceexporter_login.gif)
 
-## 2.1 Configuración
+## 2.1 Configuración <a name="2.1"></a>
 
 Hay algunos datos que son fijos dentro de cada empresa y que pueden modificarse desde la configuración:
 
@@ -88,11 +107,11 @@ Por último, desde Configuración existe la opción de crear una empresa nueva. 
 
 **IMPORTANTE**: Para acceder a la nueva empresa hay que volver a iniciar el programa!
 
-## 2.2 Cuentas
+## 2.2 Cuentas <a name="2.2"></a>
 
 El proceso es idéntico para cuentas de clientes, proveedores y contrapartidas, aunque las contrapartidas tienen menos campos disponibles. 
 
-### 2.2.1 Clientes y proveedores
+### 2.2.1 Clientes y proveedores <a name="2.2.1">
 
 Constan de siete campos:
 
@@ -110,7 +129,7 @@ En el siguiente gif se ven todas las opciones posibles: revisión, cambio de uno
 
 **IMPORTANTE**: Es muy recomendable no borrar las cuentas. Es improbable que los códigos de clientes y proveedores cambien a lo largo del tiempo dentro de la misma empresa, y evita el tener que cargar el plan de cuentas cada vez que se use el Exportador.
 
-### 2.2.2 Validaciones automáticas para clientes y proveedores
+### 2.2.2 Validaciones automáticas para clientes y proveedores <a name="2.2.2">
 
 Al iniciar el Exportador o al generar el archivo de datos, las cuentas, cargadas desde la hoja de Excel, sufren una serie de validaciones automáticas:
 
@@ -125,25 +144,25 @@ Al iniciar el Exportador o al generar el archivo de datos, las cuentas, cargadas
   - Caso 2: Están previamente registradas la cuenta 43000000001, la 43000000002 y la 43000000007. El código de la nueva cuenta será el **43000000008**; no se rellenan los huecos.
   - Caso 3: No hay cuentas previamente registradas. El código de la nueva cuenta será el código base de clientes/proveedores de la configuración, por defecto **43000000001** o **41000000001**.
 
-### 2.2.3 Contrapartidas
+### 2.2.3 Contrapartidas <a name="2.2.3">
 
 Constan de dos campos:
 
 - Cuenta: Campo obligatorio, número de cuenta de once dígitos.
 - Contrapartida: Campo obligatorio, naturaleza de la contrapartida.
 
-### 2.2.2 Validaciones automáticas para contrapartidas
+### 2.2.4 Validaciones automáticas para contrapartidas <a name="2.2.4">
 
 - <u>Borrado de cuentas vacías:</u> Si se introduce una cuenta sin cuenta ni contrapartida, será borrada.
 - <u>Borrado de cuentas no numéricas:</u> Igual que para cuentas de clientes/proveedores.
 - <u>Conversión de cuentas a once dígitos:</u> Igual que para cuentas de clientes/proveedores.
 - <u>Borrado de cuentas repetidas:</u> Igual que para cuentas de clientes/proveedores.
 
-## 2.3 Facturas
+## 2.3 Facturas <a name="2.3">
 
 El proceso es idéntico para facturas emitidas y recibidas, así como para cobros y pagos.
 
-### 2.3.1 Facturas emitidas y recibidas
+### 2.3.1 Facturas emitidas y recibidas <a name="2.3.1">
 
 Constan de 24 campos, la gran mayoría autoexplicativos:
 
@@ -175,7 +194,7 @@ En el siguiente gif se ven todos los campos. Aunque no se muestran aquí, las op
 
 ![](images/invoiceexporter_invoices.gif)
 
-### 2.3.2 Validaciones automáticas para facturas
+### 2.3.2 Validaciones automáticas para facturas <a name="2.3.2">
 
 Al iniciar el Exportador o al generar el archivo de datos, las facturas, cargadas desde la hoja de Excel, sufren una serie de validaciones automáticas:
 
@@ -207,7 +226,7 @@ Al iniciar el Exportador o al generar el archivo de datos, las facturas, cargada
   - Caso 1: Es una factura emitida; se usará la cuenta general de ventas de la configuración y la naturaleza será **GENERAL VENTAS**.
   - Caso 2: Es una factura recibida; se usará la cuenta general de gastos de la configuración y la naturaleza será **GENERAL VENTAS**.
 
-### 2.3.3 Validaciones no automáticas para facturas
+### 2.3.3 Validaciones no automáticas para facturas <a name="2.3.3">
 
 Las validaciones automáticas están diseñadas _ad hoc_ para GreConsult, y suelen ser suficientes. Sin embargo, para hacer el sistema más robusto se han añadido algunas comprobaciones extra que se llevan a cabo al descargar el archivo de datos:
 
@@ -221,7 +240,7 @@ Las validaciones no automáticas siguen todas el mismo patrón: salta un aviso i
 ![](images/invoiceexporter_invoicesvalidation.gif)
 
 
-### 2.3.4 Caso especial: intracomunitarias e inversión del sujeto pasivo
+### 2.3.4 Caso especial: intracomunitarias e inversión del sujeto pasivo <a name="2.3.4">
 
 Las facturas de adquisiciones intracomunitarias e inversión del sujeto pasivo, correspondientes a los tipos de operación **IV02**, **IV20** e **IV17**, suelen aparecer en el Excel únicamente con base imponible. Por ello, el Exportador las trata de forma diferente:
 
@@ -229,7 +248,7 @@ Las facturas de adquisiciones intracomunitarias e inversión del sujeto pasivo, 
 - La cuota de IVA se calculará como _Base imponible * 0.21_.
 - A continuación, el importe total se calculará como _Base imponible + Cuota IVA_.
 
-### 2.3.5 Cobros y pagos
+### 2.3.5 Cobros y pagos <a name="2.3.5">
 
 Los cobros y pagos funcionan exactamente igual que las facturas emitidas y recibidas con algunas pequeñas diferencias:
 
@@ -237,7 +256,7 @@ Los cobros y pagos funcionan exactamente igual que las facturas emitidas y recib
 - Habitualmente este tipo de facturas solo tienen una cuota, correspondiente al cobro/pago (es decir, no están desglosadas en base imponible, cuota IVA y demás). **Esa cantidad debe estar localizada en la columna Importe**, no en Base imponible ni en ninguna otra.
 - En el caso de que un cobro/pago no tenga contrapartida asignada se usará la cuenta general de bancos de la configuración y la naturaleza será **GENERAL COBROS/PAGOS**.
 
-## 3. Carga del archivo en NCS
+## 3. Carga del archivo en NCS <a name="3">
 
 Una vez generados los archivos de cuentas y facturas pueden importarse en NCS desde **Auxiliares** - **Comunicaciones** - **Recibir datos**. En el caso de cuentas no hay que hacer nada más que indicar la ruta del fichero; en el caso de las facturas hay que marcar la casilla de **Núm asiento automático** o el asiento quedará vacío. Tras **Aceptar**, click en **Recibir** y el proceso habrá finalizado.
 
