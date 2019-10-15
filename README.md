@@ -30,7 +30,7 @@ Con la conexión configurada, el proceso de carga de datos es relativamente senc
 - Mapeo de las columnas seleccionadas con las columnas internas.
 - Click en **Append**.
 
-El mapeo se hace de forma manual, ya que cada hoja de Excel puede ser diferente: algunas incluirán el nombre del cliente/proveedor y otras solo el CIF; las columnas tendrán distinto orden, etc. Aunque no es obligatorio, seleccionar el título de la columna junto con los datos y eliminar los mapeos previos (botón derecho - **Clear all mappings**) ayudan a evitar errores.
+El mapeo se hace de forma manual, ya que cada hoja de Excel puede ser diferente: algunas incluirán el nombre del cliente/proveedor y otras solo el CIF; las columnas tendrán distinto orden, etc. Aunque no es obligatorio, seleccionar el título de la columna junto con los datos y eliminar los mapeos previos (botón derecho - **Clear all mappings**) ayuda a evitar errores.
 
 El siguiente gif muestra el proceso hasta la ventana de mapeo, incluyendo la selección del título de columna y la eliminación de los mapeos previos:
 
@@ -88,49 +88,157 @@ Por último, desde Configuración existe la opción de crear una empresa nueva. 
 
 **IMPORTANTE**: Para acceder a la nueva empresa hay que volver a iniciar el programa!
 
-## 5. Cuentas
+## 2.2 Cuentas
 
-Cuentas de cliente, de proveedores y contrapartidas. Contar las reglas que tienen. Borrado.
+El proceso es idéntico para cuentas de clientes, proveedores y contrapartidas, aunque las contrapartidas tienen menos campos disponibles. 
 
-### 5.1 Campos obligatorios
+### 2.2.1 Clientes y proveedores
 
-CIF, Nombre, Cuenta. Valores por defecto. Qué pasa si no los das. Etc.
+Constan de siete campos:
 
-### 5.2 Campos no obligatorios
+- Código: Campo obligatorio, número de cuenta de once dígitos.
+- Título: Campo obligatorio, nombre del cliente/proveedor.
+- CIF: Campo obligatorio.
+- C. Postal: Campo opcional.
+- Domicilio: Campo opcional.
+- Población: Campo opcional. Si se introduce una población no registrada en NCS, saltará un warning al importar los datos y será ignorada.
+- Observaciones: Campo opcional.
 
-Código postal, domicilio etc.
+En el siguiente gif se ven todas las opciones posibles: revisión, cambio de uno de los campos (en este caso, las observaciones), descarga del fichero de datos y borrado de cuentas.
 
-## 6. Facturas
+![](images/invoiceexporter_accounts.gif)
 
-Facturas de clientes o de proveedores. Borrado.
+**IMPORTANTE**: Es muy recomendable no borrar las cuentas. Es improbable que los códigos de clientes y proveedores cambien a lo largo del tiempo dentro de la misma empresa, y evita el tener que cargar el plan de cuentas cada vez que se use el Exportador.
 
-### 6.1 Cuenta
-### 6.2 Número documento
-### 6.3 Clave retención etc
-### 6.4 Número asiento (hay que tocar NCS)
-### 6.5 Validaciones
+### 2.2.2 Validaciones automáticas para clientes y proveedores
 
-## 7. Carga del archivo en NCS
+Al iniciar el Exportador o al generar el archivo de datos, las cuentas, cargadas desde la hoja de Excel, sufren una serie de validaciones automáticas:
 
-Se genera un XML que puede inspeccionarse con el bloc de notas. Se carga desde Auxiliares - Recibir datos.
+- <u>Borrado de cuentas vacías:</u> Si se introduce una cuenta sin código, título ni CIF (por ejemplo, solo c. postal y domicilio), será borrada.
+- <u>Borrado de cuentas no numéricas:</u> Si se introduce una cuenta con código no enteramente numérico (por ejemplo, 4300000AAAA), será borrada.
+- <u>Conversión de cuentas a once dígitos:</u> Es posible introducir cuentas de diez dígitos, pero se les añadirá automáticamente un 0 en la sexta posición; 4399999999 se convertirá en 43999099999. Asimismo, si se introduce una cuenta de más de once dígitos será recortada, usando los primeros seis caracteres y los últimos cinco; 4300009999999900001 se convertirá en 43000000001.
+- <u>Asignación de CIFs en cuentas vacías:</u> El CIF es un campo obligatorio. Si una cuenta lo tiene en blanco, se le asignará como CIF los primeros 25 caracteres de su título. Si tanto título como CIF están en blanco, se le asignará como CIF su código. El caso de que tanto CIF como título y código estén vacíos no es posible, ya que la primera validación habría borrado la cuenta.
+- <u>Asignación de títulos en cuentas vacías:</u> El título es un campo obligatorio. Si una cuenta lo tiene en blanco, se le asignará como título su CIF.
+- <u>Borrado de cuentas repetidas:</u> Se eliminarán las cuentas con título, código o CIF repetido, dejando en cada caso la más antigua.
+- <u>Asignación de nuevos códigos de cuenta</u>: Es la validación más compleja. Hay un caso frecuente en el que al introducir **facturas** en el exportador se dispone de un título y un CIF, pero no del código asociado. El Exportador es suficientemente inteligente como para encontrar ese código si el título/CIF ya están en las cuentas registradas, pero ¿y si no? En ese caso, se trata de un cliente/proveedor nuevo, y debe tratarse como tal. Se creará en la tabla de cuentas correspondiente una nueva entrada con los datos disponibles en la factura, normalmente título, CIF y c. postal, y se generará el código nuevo como el mayor de los ya existentes + 1. Es decir:
+  - Caso 1: Están previamente registradas la cuenta 43000000001, la 43000000002 y la 43000000003. El código de la nueva cuenta será el **43000000004**.
+  - Caso 2: Están previamente registradas la cuenta 43000000001, la 43000000002 y la 43000000007. El código de la nueva cuenta será el **43000000008**; no se rellenan los huecos.
+  - Caso 3: No hay cuentas previamente registradas. El código de la nueva cuenta será el código base de clientes/proveedores de la configuración, por defecto **43000000001** o **41000000001**.
 
-### Excel to Director Invoice Exporter - Releases
+### 2.2.3 Contrapartidas
 
-#### v1.0 
-Added Continuous Delivery for the app with Squirrel as a feature. New notifications for updates.
-#### v1.1
-Changing access file to handle both local and remote connections.
-#### v1.2 - v1.3
-Bug fixing: update problem - Squirrel wasn't properly configured.
-#### v1.4
-Minor (but critical) change: New process to numerate accounts.
-#### v1.5
-Migrated to Entity Framework. About the test suite: New UI tests with Selenium. More unit tests added - coverage up +15%. New DB tests added, now that everything DB-related runs on EF.
-#### v1.6
-Adding missing .msi files as part of the main installation file - latest .NET connector is not compatible with EF+MySQL, so it's mandatory to store a backup of the previous version.
-#### v1.7
-Bug fixing: the program doesn't allow having duplicate CIFs anymore.
-#### v1.8
-Bug fixing: 'Create new company' feature was duplicating the generic DB schema instead of the chosen one.
-#### v1.9
-New requirement: adding support for invoices just for supplies, with no value at all, according to Spanish legislation.
+Constan de dos campos:
+
+- Cuenta: Campo obligatorio, número de cuenta de once dígitos.
+- Contrapartida: Campo obligatorio, naturaleza de la contrapartida.
+
+### 2.2.2 Validaciones automáticas para contrapartidas
+
+- <u>Borrado de cuentas vacías:</u> Si se introduce una cuenta sin cuenta ni contrapartida, será borrada.
+- <u>Borrado de cuentas no numéricas:</u> Igual que para cuentas de clientes/proveedores.
+- <u>Conversión de cuentas a once dígitos:</u> Igual que para cuentas de clientes/proveedores.
+- <u>Borrado de cuentas repetidas:</u> Igual que para cuentas de clientes/proveedores.
+
+## 2.3 Facturas
+
+El proceso es idéntico para facturas emitidas y recibidas, así como para cobros y pagos.
+
+### 2.3.1 Facturas emitidas y recibidas
+
+Constan de 24 campos, la gran mayoría autoexplicativos:
+
+- Cuenta: Número de cuenta de once dígitos.
+- Cliente/Proveedor: Título de la cuenta.
+- CIF
+- Cod. Postal: Solo se usa en la creación de nuevas cuentas (ver apartado 2.2.2).
+- Fecha: Si no se proporciona **se usará el día en curso.**
+- Concepto: Código de concepto en NCS.
+- Número Doc
+- Base Imponible
+- IVA %: Dos caracteres, sin espacios, decimales ni símbolos de %
+- Cuota IVA
+- Importe
+- Suplidos
+- Retención
+- Tipo ret: Clave de retención en NCS.
+- Clave sel: Clave de selección en NCS.
+- Observaciones
+- Num. Asiento
+- Tipo Operacion
+- Serie Asiento
+- Contrapartida
+- Cta. Contrapartida
+- Doc. Origen
+- Fecha Doc. Origen: Necesaria para las devoluciones. Si no se proporciona y el asiento lo requiere, se usará la fecha de factura. Si no se proporciona tampoco la fecha de factura, se usará el día en curso.
+
+En el siguiente gif se ven todos los campos. Aunque no se muestran aquí, las opciones posibles son iguales que las de cuentas: revisión, modificación de campos, descarga del fichero de datos y borrado de facturas.
+
+![](images/invoiceexporter_invoices.gif)
+
+### 2.3.2 Validaciones automáticas para facturas
+
+Al iniciar el Exportador o al generar el archivo de datos, las facturas, cargadas desde la hoja de Excel, sufren una serie de validaciones automáticas:
+
+- <u>Validación de cuentas:</u> Dado que puede haber cuentas nuevas, se realizan todas las validaciones de cuentas explicadas en el apartado anterior.
+- <u>Incorporación de nuevas cuentas:</u> Si en la factura hay cuentas no existentes, se incorporan a la BBDD.
+- <u>Información de cuentas preexistentes:</u> Si en la factura hay cuentas preexistentes con falta de campos (por ejemplo, si en la factura está el CIF de un cliente, pero no su título ni su código), se carga esa información desde la BBDD.
+- <u>Información de contrapartidas preexistentes:</u> Si en la factura hay un código de contrapartida ya existente en la BBDD, se actualizará con la naturaleza contrapartida correspondiente a dicho código. Ejemplos: 
+  - Caso 1: En la BBDD existe la contrapartida **60000000001 Compras de mercaderías** y los datos de la factura son **60000000001 Compras diversas**; se actualizará la factura a **60000000001 Compras de mercaderías**.
+  - Caso 2: En la BBDD existe la contrapartida **60000000001 Compras de mercaderías** y los datos de la factura son **60000000001**, sin naturaleza; se actualizará la factura a **60000000001 Compras de mercaderías**.
+  - Caso 3: En la BBDD existe la contrapartida **60000000001 Compras de mercaderías** y los datos de la factura son **Compras de mercaderías**, sin código; se actualizará la factura a **60000000001 Compras de mercaderías**.
+  - Caso 4: En la BBDD existe la contrapartida **60000000001 Compras de mercaderías** y los datos de la factura son **60000000002 Compras diversas**; la factura no se actualizará y habrá que validarla manualmente, como se verá a continuación.
+- <u>Cantidades a cero:</u> Si no se han proporcionado datos de base imponible, cuota de IVA, retención o suplidos se asignará automáticamente el valor de 0€.
+- <u>Cálculo del importe total:</u> En la inmensa mayoría de casos, salvo en algunos especiales que se verán a continuación, el importe se calcula automáticamente **aunque se proporcione la información del mismo**. El valor total es el resultado de la ecuación _Base imponible + Cuota IVA - Retención_. Los suplidos van aparte.
+- <u>Cálculo del código de concepto</u>: Si no se proporciona, el código de concepto por defecto es **01** para facturas emitidas, **02** para devoluciones de facturas emitidas, **03** para facturas recibidas y **04** para devoluciones de facturas recibidas.
+- <u>Eliminación de facturas con importe cero</u>: NCS no admite asientos sin importe, por lo que las facturas con importe cero se eliminan automáticamente.
+- <u>Cálculo del tipo de operación</u>: Si no se proporciona, el tipo de operación por defecto es **IV01**. Si se proporciona en un formato incorrecto, el Exportador intentará modificarlo automáticamente:
+  - Caso 1: Se da **1**; se actualiza a **IV01**.
+  - Caso 2: Se da **01**; se actualiza a **IV01**.
+  - Caso 3: Se da **IV1**; se actualiza a **IV01**.
+  - Caso 4: Se da **K**, correspondiente a IV20 en los viejos códigos de DirectorNET; se actualiza a **IV20**.
+  - Caso 5: Se da, por ejemplo, **Operación 1**; la factura no se actualizará y la importación fallará, el Exportador no puede controlar todos los casos!
+- <u>Cálculo del porcentaje de IVA</u>: Si no se proporciona, se asume que el porcentaje de IVA es **EX**. Si se proporciona en un formato incorrecto, el Exportador intentará modificarlo automáticamente:
+  - Caso 1: Se da **21 %**; se actualiza a **21**.
+  - Caso 2: Se da **21.00%**; se actualiza a **21**.
+  - Caso 3: Se da **21%**; se actualiza a **21**.
+  - Caso 4: Se da **Exento**; se actualiza a **EX**.
+  - Caso 5: Se da, por ejemplo, **87%**; la factura no se actualizará y habrá que validarla manualmente, como se verá a continuación.
+- <u>Cálculo de contrapartidas</u>: Si no se ha proporcionado ninguna contrapartida para la factura, se usarán los valores por defecto:
+  - Caso 1: Es una factura emitida; se usará la cuenta general de ventas de la configuración y la naturaleza será **GENERAL VENTAS**.
+  - Caso 2: Es una factura recibida; se usará la cuenta general de gastos de la configuración y la naturaleza será **GENERAL VENTAS**.
+
+### 2.3.3 Validaciones no automáticas para facturas
+
+Las validaciones automáticas están diseñadas _ad hoc_ para GreConsult, y suelen ser suficientes. Sin embargo, para hacer el sistema más robusto se han añadido algunas comprobaciones extra que se llevan a cabo al descargar el archivo de datos:
+
+- <u>Todas las contrapartidas existen</u>: Si las facturas tienen contrapartidas no registradas en la BBDD, hay que añadirlas. Esta validación es semiautomática, ya que permite tanto cancelar la exportación para revisarlas como añadirlas automáticamente y generar el archivo.
+- <u>Los porcentajes de IVA son correctos</u>: Si alguna factura tiene un porcentaje de IVA no válido (los aceptados son EX, NS, 21, 18, 16, 10, 8, 7 y 4), no se puede realizar la exportación.
+- <u>Todas las retenciones tienen clave</u>: Si alguna factura tiene cuota de retención pero no clave, no se puede realizar la exportación.
+- <u>Caso particular de arrendamientos</u>: Si alguna factura tiene clave de retención **M** y tipo de operación distinto de **IV13**, no se puede realizar la exportación.
+
+Las validaciones no automáticas siguen todas el mismo patrón: salta un aviso indicando qué pasa y las filas erróneas quedan marcadas en gris. Tras corregir los errores, la exportación será permitida:
+
+![](images/invoiceexporter_invoicesvalidation.gif)
+
+
+### 2.3.4 Caso especial: intracomunitarias e inversión del sujeto pasivo
+
+Las facturas de adquisiciones intracomunitarias e inversión del sujeto pasivo, correspondientes a los tipos de operación **IV02**, **IV20** e **IV17**, suelen aparecer en el Excel únicamente con base imponible. Por ello, el Exportador las trata de forma diferente:
+
+- El porcentaje de IVA siempre será **21**, aunque no se proporcione información.
+- La cuota de IVA se calculará como _Base imponible * 0.21_.
+- A continuación, el importe total se calculará como _Base imponible + Cuota IVA_.
+
+### 2.3.5 Cobros y pagos
+
+Los cobros y pagos funcionan exactamente igual que las facturas emitidas y recibidas con algunas pequeñas diferencias:
+
+- El código de concepto debe ser **05** para cobros o **06** para pagos. Si no se proporciona esta información el Exportador **no las considerará cobros/pagos sino facturas emitidas/recibidas**.
+- Habitualmente este tipo de facturas solo tienen una cuota, correspondiente al cobro/pago (es decir, no están desglosadas en base imponible, cuota IVA y demás). **Esa cantidad debe estar localizada en la columna Importe**, no en Base imponible ni en ninguna otra.
+- En el caso de que un cobro/pago no tenga contrapartida asignada se usará la cuenta general de bancos de la configuración y la naturaleza será **GENERAL COBROS/PAGOS**.
+
+## 3. Carga del archivo en NCS
+
+Una vez generados los archivos de cuentas y facturas pueden importarse en NCS desde **Auxiliares** - **Comunicaciones** - **Recibir datos**. En el caso de cuentas no hay que hacer nada más que indicar la ruta del fichero; en el caso de las facturas hay que marcar la casilla de **Núm asiento automático** o el asiento quedará vacío. Tras **Aceptar**, click en **Recibir** y el proceso habrá finalizado.
+
+![](images/ncs_import.gif)
