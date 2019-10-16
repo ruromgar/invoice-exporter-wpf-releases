@@ -99,9 +99,10 @@ Hay algunos datos que son fijos dentro de cada empresa y que pueden modificarse 
   - Emitidas abonos: cuenta de once dígitos para IVA de devoluciones de facturas emitidas. Por defecto es **47700000002**.
   - Recibidas: cuenta de once dígitos para IVA de facturas recibidas. Por defecto es **47200000001**.
   - Recibidas abonos: cuenta de once dígitos para IVA de devoluciones de facturas recibidas. Por defecto es **47200000002**.					
+
 Además, en la esquina inferior derecha aparece la versión del programa que está instalada.
 
-Por último, desde Configuración existe la opción de crear una empresa nueva. Haciendo click en el botón con el símbolo **+** aparecerá un mensaje pidiendo el nombre de la nueva empresa. Solo están permitidos caracteres alfanuméricos estándar (es decir: ni eñe, ni espacios, ni puntos, ni comas...) y el nombre debe empezar por una letra. Si se introduce algún caracter prohibido será sustituido automáticamente. En el siguiente gif puede verse el proceso entero; _La Española_ se convierte en _la\_espanola_.
+En esta pantalla hay dos botones: el primer redirige a esta página, el manual de ayuda. El segundo es la funcionalidad de crear una empresa nueva. Haciendo click en el botón con el símbolo **+** aparecerá un mensaje pidiendo el nombre de la nueva empresa. Solo están permitidos caracteres alfanuméricos estándar (es decir: ni eñe, ni espacios, ni puntos, ni comas...) y el nombre debe empezar por una letra. Si se introduce algún caracter prohibido será sustituido automáticamente. En el siguiente gif puede verse el proceso entero; _La Española_ se convierte en _la\_espanola_.
 
 ![](images/invoiceexporter_newcompany.gif)
 
