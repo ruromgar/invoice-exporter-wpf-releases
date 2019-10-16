@@ -79,7 +79,7 @@ En este momento los datos ya se encuentran en la BBDD de la empresa elegida (en 
 
 Hay algunos datos que son fijos dentro de cada empresa y que pueden modificarse desde la configuración:
 
-![](images/invoiceexporter_configuration.png)
+![](images/invoiceexporter_config.png)
 
 - Empresa
   - Código: el número de empresa asociado en NCS. Por defecto es **001**.
