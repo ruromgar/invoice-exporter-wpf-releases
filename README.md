@@ -246,19 +246,19 @@ Las validaciones no automáticas siguen todas el mismo patrón: salta un aviso i
 Las facturas de adquisiciones intracomunitarias e inversión del sujeto pasivo, correspondientes a los tipos de operación **IV02**, **IV20** e **IV17**, suelen aparecer en el Excel únicamente con base imponible. Por ello, el Exportador las trata de forma diferente:
 
 - El porcentaje de IVA siempre será **21**, aunque no se proporcione información.
-- La cuota de IVA se calculará como _Base imponible * 0.21_.
-- A continuación, el importe total se calculará como _Base imponible + Cuota IVA_.
+- La cuota de IVA se calculará como _base imponible * 0.21_.
+- A continuación, el importe total se calculará como _base imponible + cuota IVA_.
 
 ### 2.3.5 Cobros y pagos <a name="2.3.5">
 
 Los cobros y pagos funcionan exactamente igual que las facturas emitidas y recibidas con algunas pequeñas diferencias:
 
 - El código de concepto debe ser **05** para cobros o **06** para pagos. Si no se proporciona esta información el Exportador **no las considerará cobros/pagos sino facturas emitidas/recibidas**.
-- Habitualmente este tipo de facturas solo tienen una cuota, correspondiente al cobro/pago (es decir, no están desglosadas en base imponible, cuota IVA y demás). **Esa cantidad debe estar localizada en la columna Importe**, no en base imponible ni en ninguna otra.
+- Habitualmente este tipo de facturas solo tienen una cuota, correspondiente al cobro/pago (es decir, no están desglosadas en base imponible, cuota IVA y demás). **Esa cantidad debe estar localizada en la columna importe**, no en base imponible ni en ninguna otra.
 - En el caso de que un cobro/pago no tenga contrapartida asignada se usará la cuenta general de bancos de la configuración y la naturaleza será **GENERAL COBROS/PAGOS**.
 
 ## 3. Carga del archivo en NCS <a name="3">
 
-Una vez generados los archivos de cuentas y facturas pueden importarse en NCS desde **Auxiliares** - **Comunicaciones** - **Recibir datos**. En el caso de cuentas no hay que hacer nada más que indicar la ruta del fichero; en el caso de las facturas hay que marcar la casilla de **Núm asiento automático** o el asiento quedará vacío. Tras **Aceptar**, click en **Recibir** y el proceso habrá finalizado.
+Una vez generados los archivos de cuentas y facturas pueden importarse en NCS desde **Auxiliares** - **Comunicaciones** - **Recibir datos**. En el caso de cuentas no hay que hacer nada más que indicar la ruta del fichero; en el caso de las facturas hay que marcar la casilla de **Núm. asiento automático** o el número de asiento quedará vacío. Tras **Aceptar**, hay que hacer click en **Recibir** y el proceso habrá finalizado.
 
 ![](images/ncs_import.gif)
