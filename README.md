@@ -1,6 +1,6 @@
 # Exportador de facturas - Manual de usuario
 
-## Índice
+## Índice <a name="index"></a>
 - [Introducción](#intro)
 - [Carga de datos desde Excel](#1)
   - [Solución de problemas](#1.1)
@@ -209,7 +209,7 @@ Al iniciar el Exportador o al generar el archivo de datos, las facturas, cargada
 - <u>Cantidades a cero:</u> Si no se han proporcionado datos de base imponible, cuota de IVA, retención o suplidos se asignará automáticamente el valor de 0€.
 - <u>Cálculo del importe total:</u> En la inmensa mayoría de casos, salvo en algunos especiales que se verán a continuación, el importe se calcula automáticamente **aunque se proporcione la información del mismo**. El valor total es el resultado de la ecuación _Base imponible + Cuota IVA - Retención_. Los suplidos van aparte.
 - <u>Cálculo del código de concepto</u>: Si no se proporciona, el código de concepto por defecto es **01** para facturas emitidas, **02** para devoluciones de facturas emitidas, **03** para facturas recibidas y **04** para devoluciones de facturas recibidas.
-- <u>Eliminación de facturas con importe cero</u>: NCS no admite asientos sin importe, por lo que las facturas con importe cero se eliminan automáticamente.
+- <u>Eliminación de facturas con importe cero</u>: NCS no admite asientos sin importe, por lo que las facturas con importe cero se eliminan automáticamente. La única excepción a este caso es una factura que únicamente tenga suplidos.
 - <u>Cálculo del tipo de operación</u>: Si no se proporciona, el tipo de operación por defecto es **IV01**. Si se proporciona en un formato incorrecto, el Exportador intentará modificarlo automáticamente:
   - Caso 1: Se da **1**; se actualiza a **IV01**.
   - Caso 2: Se da **01**; se actualiza a **IV01**.
@@ -253,7 +253,7 @@ Las facturas de adquisiciones intracomunitarias e inversión del sujeto pasivo, 
 Los cobros y pagos funcionan exactamente igual que las facturas emitidas y recibidas con algunas pequeñas diferencias:
 
 - El código de concepto debe ser **05** para cobros o **06** para pagos. Si no se proporciona esta información el Exportador **no las considerará cobros/pagos sino facturas emitidas/recibidas**.
-- Habitualmente este tipo de facturas solo tienen una cuota, correspondiente al cobro/pago (es decir, no están desglosadas en base imponible, cuota IVA y demás). **Esa cantidad debe estar localizada en la columna Importe**, no en Base imponible ni en ninguna otra.
+- Habitualmente este tipo de facturas solo tienen una cuota, correspondiente al cobro/pago (es decir, no están desglosadas en base imponible, cuota IVA y demás). **Esa cantidad debe estar localizada en la columna Importe**, no en base imponible ni en ninguna otra.
 - En el caso de que un cobro/pago no tenga contrapartida asignada se usará la cuenta general de bancos de la configuración y la naturaleza será **GENERAL COBROS/PAGOS**.
 
 ## 3. Carga del archivo en NCS <a name="3">
