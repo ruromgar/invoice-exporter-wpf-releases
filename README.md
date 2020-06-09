@@ -69,6 +69,8 @@ Al hacer click en **Append** es posible que aparezca un aviso si no todas las co
 
 ![](images/mysqlforexcel_problem1.gif)
 
+- El programa hace amago de abrir pero no arranca: Si se realiza una instalación en un ordenador limpio, además del exportador son necesarios tres archivos: `mysql-for-excel-custom.msi`, `mysql-connector-net-8.0.13.msi` y, en ocasiones, también `MVST for Office Runtime.exe`. Solicitadlos a vuestro admin de sistemas.
+
 ## 2. Revisión y generación del archivo de datos <a name="2"></a>
 
 En este momento los datos ya se encuentran en la BBDD de la empresa elegida (en este tutorial, _gcmain\_bk_). El siguiente paso es revisar que todo está correcto y generar el archivo de datos para importar. Para ello, lo primero es iniciar sesión en el Exportador. Tras hacer doble click en el icono del programa, se abrirá la ventana de login. El programa busca automáticamente actualizaciones, y se reinicia si encuentra alguna; si no, aparecerá un mensaje diciendo _El programa está actualizado_. Click en **Ok**, click en el desplegable para seleccionar la empresa y finalmente introducción de usuario y contraseña.
